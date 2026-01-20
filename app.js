@@ -9,7 +9,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5000",
+    origin: "http://localhost:6000",
     credentials: true,
   })
 );
@@ -29,7 +29,7 @@ app.use(express.static("public"));
 app.get("/login", (req, res) => {
   res
     .send("Welcome back, Smeet")
-    .setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
+    .setHeader("Access-Control-Allow-Origin", "http://localhost:6000");
 });
 
 //

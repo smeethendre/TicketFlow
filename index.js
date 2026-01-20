@@ -7,8 +7,8 @@ dotenv.config();
 const startServer = async () => {
   try {
     await connectDb();
-    app.listen(process.env.port || 8000, () => {
-      console.log("server start successfull on http://localhost:500");
+    app.listen(process.env.PORT || 8000, () => {
+      console.log("server start successfull on http://localhost:6000");
     });
   } catch (error) {
     console.error("server not able to start", error);
