@@ -1,20 +1,19 @@
 import Movie from "../model/movie.model.js";
 import { ApiError } from "../util/apiError.util.js";
 
-const createMovie = async (req, res) => {
+const createMovie = async (req, res, next) => {
   const movieData = req.body;
 
-  if (!movieData) {
+  if (!movieData || Object.keys(movieData.length === 0)) {
     throw new ApiError(400, "movie data not received");
   }
 
   try {
-    const movieCreated = await Movie.Create(movieData);
+    const movieCreated = await Movie.create(movieData);
     res.send(201).json({
       success: true,
       message: "Successfully created new movie",
     });
-    
   } catch (error) {
     res.send(500).json({
       success: false,
@@ -22,3 +21,5 @@ const createMovie = async (req, res) => {
     });
   }
 };
+
+export { createMovie };
