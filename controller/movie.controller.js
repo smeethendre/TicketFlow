@@ -8,18 +8,11 @@ const createMovie = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "movie data not received");
   }
 
-  try {
-    const movieCreated = await Movie.create(movieData);
-    res.send(201).json({
-      success: true,
-      message: "Successfully created new movie",
-    });
-  } catch (error) {
-    res.send(500).json({
-      success: false,
-      message: "something went wrong while creating movie",
-    });
-  }
+  const movieCreated = await Movie.create(movieData);
+  res.send(201).json({
+    success: true,
+    message: "Successfully created new movie",
+  });
 });
 
 export { createMovie };
