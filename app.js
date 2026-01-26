@@ -9,7 +9,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:6000",
+    origin: "http://localhost:3000",
     credentials: true,
   }),
 );
@@ -21,15 +21,19 @@ app.use(
   }),
 );
 
-app.use(express.urlencoded()); // when data is sent fron frontend using the url and not using json,
+app.use(
+  express.urlencoded({
+    extended: true,
+  }),
+); // when data is sent fron frontend using the url and not using json,
 // backend doesn't understand it well so it converts into understandable format like json.
 
 app.use(express.static("public"));
 
 app.get("/login", (req, res) => {
   res
-    .send("Welcome back, Smeet")
-    .setHeader("Access-Control-Allow-Origin", "http://localhost:6000");
+    .setHeader("Access-Control-Allow-Origin", "http://localhost:3000")
+    .send("Welcome back, Smeet");
 });
 
 app.use("/ta/api/v1", router);
