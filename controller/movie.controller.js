@@ -1,7 +1,7 @@
 import Movie from "../model/movie.model.js";
 import { ApiError } from "../util/apiError.util.js";
 
-const createMovie = async (req, res, next) => {
+const createMovie = asyncHandler(async (req, res, next) => {
   const movieData = req.body;
 
   if (!movieData || Object.keys(movieData.length === 0)) {
@@ -20,6 +20,6 @@ const createMovie = async (req, res, next) => {
       message: "something went wrong while creating movie",
     });
   }
-};
+});
 
 export { createMovie };
