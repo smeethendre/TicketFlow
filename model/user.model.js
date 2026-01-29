@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const userSchema = new Schema({
-
   avatar: {
     type: String,
     required: false,
@@ -30,7 +29,9 @@ const userSchema = new Schema({
 userSchema.plugin(mongooseAggregatePaginate);
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next(); // if password is not modified then proceed
+  if (!this.isModified("password")) {
+    return next();
+  } // if password is not modified then proceed
   //to next middleware
 
   this.password = await bcrypt.hash(this.password, 10); //if modified or new, hash it.
