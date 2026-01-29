@@ -6,7 +6,7 @@ const movieSchema = new Schema({
     required: true,
   },
 
-  runtimeMunites: {
+  runtimeMinutes: {
     type: Number,
     required: true,
     min: 1,
