@@ -15,7 +15,7 @@ app.use(
 );
 
 app.use(
-  // data from the frontend is converted to json i.e understandable to backend
+
   express.json({
     limit: "16kb",
   }),
@@ -25,8 +25,7 @@ app.use(
   express.urlencoded({
     extended: true,
   }),
-); // when data is sent fron frontend using the url and not using json,
-// backend doesn't understand it well so it converts into understandable format like json.
+); 
 
 app.use(express.static("public"));
 
