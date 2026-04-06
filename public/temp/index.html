@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TicketFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#0a0a0f;
+  --surface:#12121a;
+  --surface2:#1a1a26;
+  --border:rgba(255,255,255,0.07);
+  --ink:#f0eff8;
+  --muted:rgba(240,239,248,0.45);
+  --accent:#e8453c;
+  --accent2:#ff8c42;
+  --blue:#4a9eff;
+  --green:#22c55e;
+  --gold:#f59e0b;
+}
+
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;min-height:100vh;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(232,69,60,0.4);border-radius:2px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.02em;color:var(--ink);cursor:pointer;}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-btn{padding:8px 18px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none;font-family:'DM Sans',sans-serif;}
+.nav-btn.outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.nav-btn.outline:hover{border-color:rgba(255,255,255,0.2);color:var(--ink);}
+.nav-btn.primary{background:var(--accent);color:#fff;}
+.nav-btn.primary:hover{background:#d63d35;}
+.nav-user{display:none;align-items:center;gap:12px;}
+.nav-user-name{font-size:13px;color:var(--muted);}
+.nav-user-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:60px;}
+.page.active{display:block;}
+
+/* ── HOME PAGE ── */
+#home{background:var(--bg);}
+.hero{padding:80px 32px 60px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;border:1px solid rgba(232,69,60,0.3);padding:6px 14px;border-radius:100px;}
+.hero-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(40px,5vw,64px);line-height:1.05;letter-spacing:-0.03em;margin-bottom:20px;}
+.hero-title .grad{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:16px;line-height:1.7;color:var(--muted);margin-bottom:36px;max-width:440px;}
+.hero-btns{display:flex;gap:12px;}
+.btn{padding:12px 28px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:all .25s;border:none;font-family:'DM Sans',sans-serif;}
+.btn-red{background:var(--accent);color:#fff;}
+.btn-red:hover{background:#d63d35;transform:translateY(-1px);}
+.btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);border-color:rgba(255,255,255,0.15);}
+
+.hero-visual{position:relative;}
+.movie-stack{position:relative;height:380px;}
+.movie-card-hero{position:absolute;border-radius:16px;overflow:hidden;transition:all .4s cubic-bezier(0.16,1,0.3,1);}
+.movie-card-hero:nth-child(1){width:200px;height:300px;right:0;top:40px;background:linear-gradient(160deg,#1e3a5f,#0a1628);border:1px solid rgba(74,158,255,0.2);transform:rotate(4deg);}
+.movie-card-hero:nth-child(2){width:200px;height:300px;right:60px;top:20px;background:linear-gradient(160deg,#3d1515,#1a0808);border:1px solid rgba(232,69,60,0.2);transform:rotate(-2deg);}
+.movie-card-hero:nth-child(3){width:200px;height:300px;right:30px;top:0;background:linear-gradient(160deg,#1a1a2e,#0d0d1f);border:1px solid var(--border);z-index:2;}
+.movie-card-hero-inner{padding:20px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;}
+.mch-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:6px;}
+.mch-meta{font-size:11px;color:var(--muted);display:flex;gap:8px;}
+.mch-badge{padding:3px 8px;background:rgba(232,69,60,0.2);border:1px solid rgba(232,69,60,0.3);border-radius:4px;font-size:10px;color:var(--accent);}
+
+/* SEARCH BAR */
+.search-section{padding:0 32px 60px;max-width:1100px;margin:0 auto;}
+.search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;}
+.search-bar input{flex:1;background:none;border:none;outline:none;font-size:15px;color:var(--ink);font-family:'DM Sans',sans-serif;}
+.search-bar input::placeholder{color:var(--muted);}
+.search-bar-btn{background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+
+/* MOVIES GRID */
+.section{padding:0 32px 60px;max-width:1100px;margin:0 auto;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em;}
+.section-link{font-size:13px;color:var(--accent);cursor:pointer;text-decoration:none;}
+.movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;}
+.movie-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .25s;position:relative;}
+.movie-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.12);}
+.movie-poster{height:240px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden;}
+.movie-poster-grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--surface));}
+.movie-card-body{padding:12px;}
+.movie-card-title{font-family:'Syne',sans-serif;font-weight:600;font-size:14px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.movie-card-meta{font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center;}
+.dot{width:3px;height:3px;border-radius:50%;background:var(--muted);}
+.rating{display:flex;align-items:center;gap:3px;color:var(--gold);font-size:11px;}
+
+/* ── AUTH MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:420px;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--surface2);border:none;color:var(--muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.02em;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
+.form-group{margin-bottom:16px;}
+.form-label{font-size:12px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;display:block;}
+.form-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:rgba(232,69,60,0.5);}
+.form-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;border-radius:8px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:background .2s;}
+.form-btn:hover{background:#d63d35;}
+.form-switch{text-align:center;margin-top:20px;font-size:13px;color:var(--muted);}
+.form-switch span{color:var(--accent);cursor:pointer;}
+.form-error{font-size:12px;color:var(--accent);margin-top:6px;display:none;}
+.form-error.show{display:block;}
+
+/* ── MOVIE DETAIL PAGE ── */
+#movie-detail{background:var(--bg);}
+.movie-hero{position:relative;padding:40px 32px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start;}
+.movie-poster-lg{width:280px;height:400px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:80px;border:1px solid var(--border);flex-shrink:0;}
+.movie-detail-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,69,60,0.15);border:1px solid rgba(232,69,60,0.3);border-radius:6px;padding:4px 12px;font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;}
+.movie-detail-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,4vw,48px);letter-spacing:-0.03em;margin-bottom:12px;line-height:1.1;}
+.movie-detail-meta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;}
+.meta-chip{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--muted);}
+.movie-detail-desc{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:28px;max-width:540px;}
+.cast-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.cast-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
+.cast-chip{background:var(--surface2);border-radius:100px;padding:5px 14px;font-size:12px;}
+.book-btn{background:var(--accent);color:#fff;border:none;padding:14px 36px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .25s;}
+.book-btn:hover{background:#d63d35;transform:translateY(-2px);}
+
+/* SHOWS LIST */
+.shows-section{padding:0 32px 60px;max-width:1100px;margin:0 auto;}
+.shows-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:20px;}
+.show-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;cursor:pointer;transition:all .2s;}
+.show-card:hover{border-color:rgba(232,69,60,0.3);background:var(--surface2);}
+.show-info{display:flex;gap:24px;align-items:center;}
+.show-theatre{font-weight:500;font-size:15px;}
+.show-time{font-size:13px;color:var(--accent);font-weight:500;}
+.show-date{font-size:12px;color:var(--muted);}
+.show-seats{font-size:12px;color:var(--green);}
+.show-price{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;}
+.show-price span{font-size:12px;color:var(--muted);font-weight:300;font-family:'DM Sans',sans-serif;}
+
+/* ── SEAT SELECTION PAGE ── */
+#seat-selection{background:var(--bg);}
+.seat-page{padding:32px;max-width:900px;margin:0 auto;}
+.seat-page-title{font-family:'Syne',sans-serif;font-weight:700;font-size:24px;margin-bottom:4px;}
+.seat-page-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
+.screen{background:linear-gradient(180deg,rgba(255,255,255,0.1),transparent);height:8px;border-radius:100px;margin-bottom:40px;position:relative;}
+.screen::after{content:'SCREEN';position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:0.3em;color:var(--muted);}
+.seats-grid{display:grid;gap:8px;margin-bottom:40px;justify-items:center;}
+.seat-row{display:flex;gap:8px;align-items:center;}
+.seat-row-label{font-size:11px;color:var(--muted);width:20px;text-align:center;flex-shrink:0;}
+.seat{width:36px;height:36px;border-radius:8px 8px 4px 4px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted);}
+.seat:hover:not(.booked):not(.held){background:rgba(232,69,60,0.2);border-color:var(--accent);}
+.seat.selected{background:var(--accent);border-color:var(--accent);color:#fff;}
+.seat.booked{background:var(--surface);border-color:var(--border);cursor:not-allowed;opacity:0.4;}
+.seat.held{background:rgba(245,158,11,0.2);border-color:var(--gold);cursor:not-allowed;}
+.seat-legend{display:flex;gap:24px;margin-bottom:32px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+.legend-box{width:20px;height:20px;border-radius:4px;border:1px solid;}
+.legend-box.available{background:var(--surface2);border-color:var(--border);}
+.legend-box.selected{background:var(--accent);border-color:var(--accent);}
+.legend-box.booked{background:var(--surface);border-color:var(--border);opacity:0.4;}
+.legend-box.held{background:rgba(245,158,11,0.2);border-color:var(--gold);}
+
+/* BOOKING SUMMARY */
+.booking-summary{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;}
+.bs-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;}
+.bs-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;color:var(--muted);}
+.bs-row.total{color:var(--ink);font-weight:500;font-size:15px;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;}
+.bs-seats{font-size:12px;color:var(--accent);}
+.bs-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;border-radius:8px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:16px;transition:background .2s;}
+.bs-btn:hover{background:#d63d35;}
+.bs-btn:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed;}
+.hold-timer{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--gold);text-align:center;margin-top:12px;display:none;}
+
+/* ── BOOKINGS PAGE ── */
+#my-bookings{background:var(--bg);}
+.bookings-page{padding:40px 32px;max-width:800px;margin:0 auto;}
+.bookings-title{font-family:'Syne',sans-serif;font-weight:700;font-size:28px;margin-bottom:8px;}
+.bookings-sub{font-size:14px;color:var(--muted);margin-bottom:32px;}
+.booking-item{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;}
+.bi-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:16px;}
+.bi-movie{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;}
+.bi-status{padding:4px 12px;border-radius:100px;font-size:11px;font-weight:500;letter-spacing:0.05em;}
+.bi-status.confirmed{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+.bi-status.pending{background:rgba(245,158,11,0.15);color:var(--gold);border:1px solid rgba(245,158,11,0.3);}
+.bi-status.cancelled{background:rgba(232,69,60,0.15);color:var(--accent);border:1px solid rgba(232,69,60,0.3);}
+.bi-details{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;}
+.bi-detail-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.bi-detail-val{font-size:14px;font-weight:500;}
+.bi-seats{display:flex;flex-wrap:wrap;gap:6px;}
+.bi-seat-chip{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:32px;right:32px;z-index:3000;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;font-size:13px;min-width:260px;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(0.16,1,0.3,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.1);}
+.toast.error{border-color:rgba(232,69,60,0.4);background:rgba(232,69,60,0.1);}
+
+/* ── LOADING ── */
+.loader{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-state{text-align:center;padding:60px;color:var(--muted);}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:80px 32px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+.empty-title{font-family:'Syne',sans-serif;font-size:20px;color:var(--ink);margin-bottom:8px;}
+.empty-sub{font-size:14px;}
+
+/* BACK BTN */
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;cursor:pointer;padding:32px 32px 0;transition:color .2s;}
+.back-btn:hover{color:var(--ink);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;gap:32px;}
+  .hero-visual{display:none;}
+  .movie-hero{grid-template-columns:1fr;}
+  .movie-poster-lg{width:100%;height:200px;}
+  .bi-details{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">Ticket<span>Flow</span></div>
+  <div class="nav-links" id="nav-auth">
+    <button class="nav-btn outline" onclick="showModal('login')">Sign In</button>
+    <button class="nav-btn primary" onclick="showModal('register')">Sign Up</button>
+  </div>
+  <div class="nav-user" id="nav-user">
+    <span class="nav-user-name" id="nav-user-name"></span>
+    <button class="nav-btn outline" onclick="showPage('my-bookings')">My Bookings</button>
+    <div class="nav-user-avatar" id="nav-avatar" onclick="logout()">?</div>
+  </div>
+</nav>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <h2 class="modal-title">Welcome back</h2>
+      <p class="modal-sub">Sign in to your account to continue</p>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="login-email" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="login-password" type="password" placeholder="••••••••">
+      </div>
+      <div class="form-error" id="login-error"></div>
+      <button class="form-btn" onclick="loginUser()">Sign In</button>
+      <div class="form-switch">Don't have an account? <span onclick="switchForm('register')">Sign Up</span></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form" style="display:none;">
+      <h2 class="modal-title">Create account</h2>
+      <p class="modal-sub">Join TicketFlow today</p>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="reg-username" type="text" placeholder="johndoe">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="reg-email" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="reg-password" type="password" placeholder="Min 6 characters">
+      </div>
+      <div class="form-error" id="reg-error"></div>
+      <button class="form-btn" onclick="registerUser()">Create Account</button>
+      <div class="form-switch">Already have an account? <span onclick="switchForm('login')">Sign In</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div class="page active" id="home">
+  <!-- Hero -->
+  <div style="background:linear-gradient(180deg,rgba(232,69,60,0.04) 0%,transparent 100%);">
+    <div class="hero">
+      <div>
+        <div class="hero-tag">🎬 Now Showing</div>
+        <h1 class="hero-title">Book your<br><span class="grad">perfect seat</span><br>every time.</h1>
+        <p class="hero-sub">Discover movies, pick your seats, pay securely — all in one place. Zero stress, zero queue.</p>
+        <div class="hero-btns">
+          <button class="btn btn-red" onclick="scrollToMovies()">Browse Movies</button>
+          <button class="btn btn-ghost" onclick="showModal('register')">Get Started</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="movie-stack">
+          <div class="movie-card-hero"><div class="movie-card-hero-inner"><div class="mch-badge">Action</div><div class="mch-title">The Last Orbit</div><div class="mch-meta"><span>2h 18m</span><span>•</span><span>4K</span></div></div></div>
+          <div class="movie-card-hero"><div class="movie-card-hero-inner"><div class="mch-badge">Drama</div><div class="mch-title">Echoes of Tomorrow</div><div class="mch-meta"><span>1h 54m</span><span>•</span><span>English</span></div></div></div>
+          <div class="movie-card-hero"><div class="movie-card-hero-inner"><div class="mch-badge">Sci-Fi</div><div class="mch-title">Beyond the Veil</div><div class="mch-meta"><span>2h 32m</span><span>•</span><span>IMAX</span></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-section">
+    <div class="search-bar">
+      <span style="font-size:18px;">🔍</span>
+      <input type="text" id="search-input" placeholder="Search movies by name, language..." oninput="filterMovies()">
+      <button class="search-bar-btn" onclick="filterMovies()">Search</button>
+    </div>
+  </div>
+
+  <!-- Movies -->
+  <div class="section" id="movies-section">
+    <div class="section-header">
+      <h2 class="section-title">Now Playing</h2>
+      <span class="section-link" onclick="loadMovies()">Refresh ↺</span>
+    </div>
+    <div id="movies-grid" class="movies-grid">
+      <div class="loading-state"><div class="loader"></div><p style="margin-top:12px;font-size:13px;">Loading movies...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOVIE DETAIL PAGE -->
+<div class="page" id="movie-detail">
+  <div class="back-btn" onclick="showPage('home')">← Back to movies</div>
+  <div class="movie-hero" id="movie-detail-content">
+    <!-- filled by JS -->
+  </div>
+  <div class="shows-section">
+    <h3 class="shows-title">Available Shows</h3>
+    <div id="shows-list">
+      <div class="loading-state"><div class="loader"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEAT SELECTION PAGE -->
+<div class="page" id="seat-selection">
+  <div class="back-btn" id="seat-back-btn">← Back to shows</div>
+  <div class="seat-page">
+    <h2 class="seat-page-title" id="seat-title">Select Your Seats</h2>
+    <p class="seat-page-sub" id="seat-sub"></p>
+
+    <div class="screen"></div>
+
+    <div id="seats-container" style="margin-bottom:32px;">
+      <div class="loading-state"><div class="loader"></div></div>
+    </div>
+
+    <div class="seat-legend">
+      <div class="legend-item"><div class="legend-box available"></div><span>Available</span></div>
+      <div class="legend-item"><div class="legend-box selected"></div><span>Selected</span></div>
+      <div class="legend-item"><div class="legend-box booked"></div><span>Booked</span></div>
+      <div class="legend-item"><div class="legend-box held"></div><span>Held</span></div>
+    </div>
+
+    <div class="booking-summary">
+      <h3 class="bs-title">Booking Summary</h3>
+      <div class="bs-row"><span>Selected Seats</span><span class="bs-seats" id="selected-seats-display">None</span></div>
+      <div class="bs-row"><span>Price per seat</span><span id="price-per-seat">₹0</span></div>
+      <div class="bs-row total"><span>Total Amount</span><span id="total-amount">₹0</span></div>
+      <button class="bs-btn" id="proceed-btn" onclick="proceedToBook()" disabled>Select seats to continue</button>
+      <div class="hold-timer" id="hold-timer">⏱ Seats held for <span id="timer-count">10:00</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MY BOOKINGS PAGE -->
+<div class="page" id="my-bookings">
+  <div class="back-btn" onclick="showPage('home')">← Back to home</div>
+  <div class="bookings-page">
+    <h1 class="bookings-title">My Bookings</h1>
+    <p class="bookings-sub">Your ticket history</p>
+    <div id="bookings-list">
+      <div class="loading-state"><div class="loader"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:5000/ta/api/v1';
+
+// ── STATE ──────────────────────────────────────────
+let state = {
+  user: null,
+  accessToken: null,
+  movies: [],
+  selectedMovie: null,
+  selectedShow: null,
+  selectedSeats: [],
+  holdTimer: null,
+  holdSeconds: 600,
+};
+
+// ── INIT ───────────────────────────────────────────
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('tf_user');
+  const token = localStorage.getItem('tf_token');
+  if (saved && token) {
+    state.user = JSON.parse(saved);
+    state.accessToken = token;
+    updateNavAuth();
+  }
+  loadMovies();
+});
+
+// ── API HELPER ─────────────────────────────────────
+async function api(method, path, body = null, auth = false) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (auth && state.accessToken) headers['Authorization'] = `Bearer ${state.accessToken}`;
+
+  const opts = { method, headers, credentials: 'include' };
+  if (body) opts.body = JSON.stringify(body);
+
+  const res = await fetch(API + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Something went wrong');
+  return data;
+}
+
+// ── PAGES ──────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'my-bookings') loadMyBookings();
+}
+
+function scrollToMovies() {
+  document.getElementById('movies-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── AUTH ───────────────────────────────────────────
+function showModal(type) {
+  document.getElementById('auth-modal').classList.add('active');
+  switchForm(type);
+}
+
+function closeModal() {
+  document.getElementById('auth-modal').classList.remove('active');
+}
+
+function switchForm(type) {
+  document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = type === 'register' ? 'block' : 'none';
+}
+
+async function loginUser() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+
+  if (!email || !password) { showError(errEl, 'Please fill all fields'); return; }
+
+  try {
+    const data = await api('POST', '/user/login', { email, password });
+    state.user = data.data.user;
+    state.accessToken = data.data.accessToken;
+    localStorage.setItem('tf_user', JSON.stringify(state.user));
+    localStorage.setItem('tf_token', state.accessToken);
+    updateNavAuth();
+    closeModal();
+    toast('Welcome back, ' + state.user.userName + '!', 'success');
+  } catch(e) {
+    showError(errEl, e.message);
+  }
+}
+
+async function registerUser() {
+  const userName = document.getElementById('reg-username').value;
+  const email = document.getElementById('reg-email').value;
+  const password = document.getElementById('reg-password').value;
+  const errEl = document.getElementById('reg-error');
+
+  if (!userName || !email || !password) { showError(errEl, 'Please fill all fields'); return; }
+
+  try {
+    await api('POST', '/user/register', { userName, email, password });
+    toast('Account created! Please sign in.', 'success');
+    switchForm('login');
+  } catch(e) {
+    showError(errEl, e.message);
+  }
+}
+
+function logout() {
+  state.user = null;
+  state.accessToken = null;
+  localStorage.removeItem('tf_user');
+  localStorage.removeItem('tf_token');
+  updateNavAuth();
+  showPage('home');
+  toast('Logged out successfully');
+}
+
+function updateNavAuth() {
+  const authEl = document.getElementById('nav-auth');
+  const userEl = document.getElementById('nav-user');
+  if (state.user) {
+    authEl.style.display = 'none';
+    userEl.style.display = 'flex';
+    document.getElementById('nav-user-name').textContent = state.user.userName;
+    document.getElementById('nav-avatar').textContent = state.user.userName[0].toUpperCase();
+  } else {
+    authEl.style.display = 'flex';
+    userEl.style.display = 'none';
+  }
+}
+
+function showError(el, msg) {
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ── MOVIES ─────────────────────────────────────────
+async function loadMovies() {
+  const grid = document.getElementById('movies-grid');
+  grid.innerHTML = '<div class="loading-state"><div class="loader"></div><p style="margin-top:12px;font-size:13px;color:var(--muted)">Loading movies...</p></div>';
+
+  try {
+    const data = await api('GET', '/movies');
+    state.movies = data.data || [];
+
+    if (!state.movies.length) {
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🎬</div><div class="empty-title">No movies found</div><div class="empty-sub">Check back soon for new releases</div></div>';
+      return;
+    }
+    renderMovies(state.movies);
+  } catch(e) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load movies</div><div class="empty-sub">Make sure your backend is running on port 5000</div></div>';
+  }
+}
+
+function renderMovies(movies) {
+  const grid = document.getElementById('movies-grid');
+  const emojis = ['🎬','🎭','🚀','⚔️','💥','🔮','🌊','🦸','🎪','🌟'];
+  grid.innerHTML = movies.map((m, i) => `
+    <div class="movie-card" onclick="openMovie('${m._id}')">
+      <div class="movie-poster" style="background:${posterGrad(i)}">
+        <span style="font-size:52px;z-index:1">${emojis[i % emojis.length]}</span>
+        <div class="movie-poster-grad"></div>
+      </div>
+      <div class="movie-card-body">
+        <div class="movie-card-title">${m.movieName}</div>
+        <div class="movie-card-meta">
+          <span>${m.runtimeMinutes}m</span>
+          <div class="dot"></div>
+          <span>${m.movieLanguage}</span>
+          <div class="dot"></div>
+          <div class="rating">★ <span>${(3.5 + Math.random() * 1.5).toFixed(1)}</span></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function posterGrad(i) {
+  const grads = [
+    'linear-gradient(160deg,#1e3a5f,#0a1628)',
+    'linear-gradient(160deg,#3d1515,#1a0808)',
+    'linear-gradient(160deg,#1a2e1a,#0a1a0a)',
+    'linear-gradient(160deg,#2e1a3d,#150a1a)',
+    'linear-gradient(160deg,#2e2a1a,#1a160a)',
+  ];
+  return grads[i % grads.length];
+}
+
+function filterMovies() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = state.movies.filter(m =>
+    m.movieName.toLowerCase().includes(q) ||
+    m.movieLanguage.toLowerCase().includes(q)
+  );
+  if (filtered.length === 0 && q) {
+    document.getElementById('movies-grid').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No results</div><div class="empty-sub">Try a different search term</div></div>';
+  } else {
+    renderMovies(filtered);
+  }
+}
+
+// ── MOVIE DETAIL ───────────────────────────────────
+async function openMovie(movieId) {
+  showPage('movie-detail');
+  state.selectedMovie = state.movies.find(m => m._id === movieId);
+
+  const emojis = ['🎬','🎭','🚀','⚔️','💥','🔮','🌊','🦸','🎪','🌟'];
+  const idx = state.movies.findIndex(m => m._id === movieId);
+  const m = state.selectedMovie;
+
+  document.getElementById('movie-detail-content').innerHTML = `
+    <div class="movie-poster-lg" style="background:${posterGrad(idx)}">${emojis[idx % emojis.length]}</div>
+    <div>
+      <div class="movie-detail-badge">🎬 Now Showing</div>
+      <h1 class="movie-detail-title">${m.movieName}</h1>
+      <div class="movie-detail-meta">
+        <span class="meta-chip">⏱ ${m.runtimeMinutes} min</span>
+        <span class="meta-chip">🌐 ${m.movieLanguage}</span>
+        <span class="meta-chip">📅 ${new Date(m.releaseDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span>
+      </div>
+      <p class="movie-detail-desc">${m.movieDescription}</p>
+      <p class="cast-title">Cast</p>
+      <div class="cast-list">${(m.movieCast || []).map(c => `<span class="cast-chip">${c}</span>`).join('')}</div>
+      <button class="book-btn" onclick="scrollToShows()">Book Tickets →</button>
+    </div>
+  `;
+
+  loadShows(movieId);
+}
+
+function scrollToShows() {
+  document.querySelector('.shows-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function loadShows(movieId) {
+  const list = document.getElementById('shows-list');
+  list.innerHTML = '<div class="loading-state"><div class="loader"></div></div>';
+
+  try {
+    const data = await api('GET', `/show/movie/${movieId}`);
+    const shows = data.data || [];
+
+    if (!shows.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">No shows scheduled</div><div class="empty-sub">Check back later</div></div>';
+      return;
+    }
+
+    list.innerHTML = shows.map(s => `
+      <div class="show-card" onclick="openSeatSelection('${s._id}', ${s.ticketPrice})">
+        <div class="show-info">
+          <div>
+            <div class="show-theatre">${s.theatre?.theatreName || 'Theatre'}</div>
+            <div class="show-date">${s.theatre?.theatreCity || ''} · ${new Date(s.showDate).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>
+          </div>
+          <div class="show-time">${s.showTime}</div>
+          <div class="show-seats">🟢 ${s.availableSeats} seats left</div>
+        </div>
+        <div>
+          <div class="show-price">₹${s.ticketPrice}<span>/seat</span></div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load shows</div></div>';
+  }
+}
+
+// ── SEAT SELECTION ─────────────────────────────────
+async function openSeatSelection(showId, ticketPrice) {
+  if (!state.user) {
+    toast('Please sign in to book tickets', 'error');
+    showModal('login');
+    return;
+  }
+
+  state.selectedShow = { _id: showId, ticketPrice };
+  state.selectedSeats = [];
+
+  document.getElementById('seat-back-btn').onclick = () => showPage('movie-detail');
+  document.getElementById('seat-title').textContent = `Select Your Seats`;
+  document.getElementById('seat-sub').textContent = `${state.selectedMovie?.movieName} · ₹${ticketPrice}/seat`;
+  document.getElementById('price-per-seat').textContent = `₹${ticketPrice}`;
+  document.getElementById('proceed-btn').disabled = true;
+  document.getElementById('proceed-btn').textContent = 'Select seats to continue';
+  document.getElementById('hold-timer').style.display = 'none';
+
+  showPage('seat-selection');
+  loadSeats(showId);
+}
+
+async function loadSeats(showId) {
+  const container = document.getElementById('seats-container');
+  container.innerHTML = '<div class="loading-state"><div class="loader"></div></div>';
+
+  try {
+    const data = await api('GET', `/show/${showId}/seats`);
+    const seats = data.data || [];
+    renderSeats(seats);
+  } catch(e) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load seats</div></div>';
+  }
+}
+
+function renderSeats(seats) {
+  const container = document.getElementById('seats-container');
+  const rows = {};
+
+  seats.forEach(s => {
+    const rowLetter = s.seatNumber[0];
+    if (!rows[rowLetter]) rows[rowLetter] = [];
+    rows[rowLetter].push(s);
+  });
+
+  let html = '<div class="seats-grid">';
+  Object.entries(rows).forEach(([row, rowSeats]) => {
+    html += '<div class="seat-row">';
+    html += `<div class="seat-row-label">${row}</div>`;
+    rowSeats.forEach(s => {
+      const cls = s.status === 'booked' ? 'booked' : s.status === 'held' ? 'held' : '';
+      html += `<div class="seat ${cls}" id="seat-${s._id}" onclick="toggleSeat('${s._id}','${s.seatNumber}','${s.status}')" title="${s.seatNumber}">${s.seatNumber.slice(1)}</div>`;
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function toggleSeat(seatId, seatNumber, status) {
+  if (status === 'booked' || status === 'held') return;
+
+  const el = document.getElementById(`seat-${seatId}`);
+  const idx = state.selectedSeats.findIndex(s => s.id === seatId);
+
+  if (idx > -1) {
+    state.selectedSeats.splice(idx, 1);
+    el.classList.remove('selected');
+  } else {
+    if (state.selectedSeats.length >= 8) {
+      toast('Maximum 8 seats per booking', 'error');
+      return;
+    }
+    state.selectedSeats.push({ id: seatId, number: seatNumber });
+    el.classList.add('selected');
+  }
+
+  updateBookingSummary();
+}
+
+function updateBookingSummary() {
+  const count = state.selectedSeats.length;
+  const price = state.selectedShow?.ticketPrice || 0;
+  const total = count * price;
+
+  document.getElementById('selected-seats-display').textContent = count ? state.selectedSeats.map(s => s.number).join(', ') : 'None';
+  document.getElementById('total-amount').textContent = `₹${total}`;
+
+  const btn = document.getElementById('proceed-btn');
+  if (count > 0) {
+    btn.disabled = false;
+    btn.textContent = `Hold ${count} seat${count > 1 ? 's' : ''} — ₹${total}`;
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Select seats to continue';
+  }
+}
+
+async function proceedToBook() {
+  if (!state.selectedSeats.length) return;
+
+  const btn = document.getElementById('proceed-btn');
+  btn.textContent = 'Holding seats...';
+  btn.disabled = true;
+
+  try {
+    await api('POST', '/booking/hold', {
+      showId: state.selectedShow._id,
+      seatIds: state.selectedSeats.map(s => s.id),
+    }, true);
+
+    toast('Seats held for 10 minutes!', 'success');
+    startHoldTimer();
+
+    // Create booking
+    const bookingData = await api('POST', '/booking/create', {
+      showId: state.selectedShow._id,
+      seatIds: state.selectedSeats.map(s => s.id),
+    }, true);
+
+    btn.textContent = 'Proceeding to payment...';
+
+    // Create Razorpay order
+    const orderData = await api('POST', '/payment/order', {
+      bookingId: bookingData.data._id,
+    }, true);
+
+    initiateRazorpay(orderData.data, bookingData.data._id);
+
+  } catch(e) {
+    toast(e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = `Hold ${state.selectedSeats.length} seats`;
+  }
+}
+
+function startHoldTimer() {
+  const timerEl = document.getElementById('hold-timer');
+  const countEl = document.getElementById('timer-count');
+  timerEl.style.display = 'block';
+  state.holdSeconds = 600;
+
+  if (state.holdTimer) clearInterval(state.holdTimer);
+  state.holdTimer = setInterval(() => {
+    state.holdSeconds--;
+    const m = Math.floor(state.holdSeconds / 60);
+    const s = state.holdSeconds % 60;
+    countEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (state.holdSeconds <= 0) {
+      clearInterval(state.holdTimer);
+      timerEl.style.display = 'none';
+      toast('Hold expired. Please select seats again.', 'error');
+    }
+  }, 1000);
+}
+
+function initiateRazorpay(orderData, bookingId) {
+  // Check if Razorpay script is loaded
+  if (typeof Razorpay === 'undefined') {
+    // Load Razorpay script dynamically
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => openRazorpay(orderData, bookingId);
+    document.head.appendChild(script);
+  } else {
+    openRazorpay(orderData, bookingId);
+  }
+}
+
+function openRazorpay(orderData, bookingId) {
+  const options = {
+    key: 'YOUR_RAZORPAY_KEY_ID', // replace with your key
+    amount: orderData.amount,
+    currency: orderData.currency,
+    order_id: orderData.orderId,
+    name: 'TicketFlow',
+    description: `Booking for ${state.selectedMovie?.movieName}`,
+    handler: async function(response) {
+      try {
+        await api('POST', '/payment/verify', {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          bookingId,
+        }, true);
+
+        if (state.holdTimer) clearInterval(state.holdTimer);
+        toast('🎉 Booking confirmed!', 'success');
+        setTimeout(() => showPage('my-bookings'), 1500);
+      } catch(e) {
+        toast('Payment verification failed: ' + e.message, 'error');
+      }
+    },
+    prefill: {
+      name: state.user?.userName || '',
+      email: state.user?.email || '',
+    },
+    theme: { color: '#e8453c' },
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+
+  const btn = document.getElementById('proceed-btn');
+  btn.textContent = `Hold ${state.selectedSeats.length} seats`;
+  btn.disabled = false;
+}
+
+// ── MY BOOKINGS ────────────────────────────────────
+async function loadMyBookings() {
+  if (!state.user) {
+    document.getElementById('bookings-list').innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><div class="empty-title">Sign in required</div><div class="empty-sub">Please sign in to view your bookings</div></div>';
+    return;
+  }
+
+  document.getElementById('bookings-list').innerHTML = '<div class="loading-state"><div class="loader"></div></div>';
+
+  try {
+    const data = await api('GET', '/booking/my-bookings', null, true);
+    const bookings = data.data || [];
+
+    if (!bookings.length) {
+      document.getElementById('bookings-list').innerHTML = '<div class="empty-state"><div class="empty-icon">🎟️</div><div class="empty-title">No bookings yet</div><div class="empty-sub">Book your first movie ticket!</div></div>';
+      return;
+    }
+
+    document.getElementById('bookings-list').innerHTML = bookings.map(b => `
+      <div class="booking-item">
+        <div class="bi-header">
+          <div class="bi-movie">${b.show?.movie?.movieName || 'Movie'}</div>
+          <div class="bi-status ${b.bookingStatus}">${b.bookingStatus.toUpperCase()}</div>
+        </div>
+        <div class="bi-details">
+          <div>
+            <div class="bi-detail-label">Theatre</div>
+            <div class="bi-detail-val">${b.show?.theatre?.theatreName || '—'}</div>
+          </div>
+          <div>
+            <div class="bi-detail-label">Show Time</div>
+            <div class="bi-detail-val">${b.show?.showTime || '—'}</div>
+          </div>
+          <div>
+            <div class="bi-detail-label">Amount Paid</div>
+            <div class="bi-detail-val">₹${b.totalAmount}</div>
+          </div>
+        </div>
+        <div class="bi-seats">
+          ${(b.seats || []).map(s => `<span class="bi-seat-chip">${s.seatNumber || s}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('bookings-list').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load bookings</div></div>';
+  }
+}
+
+// ── TOAST ──────────────────────────────────────────
+function toast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// Close modal on overlay click
+document.getElementById('auth-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
