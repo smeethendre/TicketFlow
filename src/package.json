@@ -1,0 +1,52 @@
+{
+  "name": "ticketing",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "realtime end-to-end ticketing API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon -r dotenv/config src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smeethendre/TicketFlow.git"
+  },
+  "keywords": [
+    "ticket"
+  ],
+  "author": "smeet hendre",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smeethendre/TicketFlow/issues"
+  },
+  "homepage": "https://github.com/smeethendre/TicketFlow#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.5",
+    "mongoose-aggregate-paginate-v2": "^1.1.4",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
+    "redis": "^5.11.0",
+    "speakeasy": "^2.0.0",
+    "urlencode": "^2.0.0",
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "prettier": "^3.7.4"
+  }
+}
