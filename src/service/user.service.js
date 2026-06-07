@@ -4,21 +4,19 @@ import { ApiError } from "../util/apiError.util.js";
 import speakeasy from "speakeasy";
 
 const registerUserService = async (userData) => {
-  const { email, password, phoneNumber } = userData;
+  const { userName, email, password, phoneNumber } = userData;
 
-  if (!email || !password) {
-    throw new ApiError(400, "email and password are required");
+  if (!userName || !email || !password) {
+    throw new ApiError(400, "userName, email and password are required");
   }
 
-  const alreadyExists = await User.findOne({ $or: [{ email }] });
+  const alreadyExists = await User.findOne({ $or: [{ email }, { userName }] });
   if (alreadyExists) {
-    throw new ApiError(409, "User with this email oralready exists");
+    throw new ApiError(409, "User with this email or userName already exists");
   }
 
-  const user = await User.create({ email, password, phoneNumber });
-  const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken",
-  );
+  const user = await User.create({ userName, email, password, phoneNumber });
+  const createdUser = await User.findById(user._id).select("-password -refreshToken");
   return createdUser;
 };
 
