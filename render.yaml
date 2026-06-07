@@ -36,7 +36,7 @@ services:
     name: ticketflow-frontend
     runtime: node
     plan: free
-    buildCommand: cd frontend && npm ci && npm run build
+    buildCommand: cd frontend && npm ci --include=dev && npm run build
     startCommand: cd frontend && npm run start -- -p $PORT
     healthCheckPath: /
     autoDeploy: true
