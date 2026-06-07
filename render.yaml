@@ -45,6 +45,8 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_TICKETFLOW_API_URL
+        value: /api/ticketflow
+      - key: TICKETFLOW_API_URL
         value: https://ticketflow-api-fko9.onrender.com/ta/api/v1
       - key: NEXT_PUBLIC_RAZORPAY_KEY_ID
         sync: false
