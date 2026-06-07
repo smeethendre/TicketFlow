@@ -58,5 +58,3 @@ services:
 databases:
   - name: ticketflow-redis
     plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
