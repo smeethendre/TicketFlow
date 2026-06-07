@@ -29,11 +29,15 @@ const verifyUser = asyncHandler(async (req, res, next) => {
 
 const verifyRole = (...roles) => {
   return (req, res, next) => {
-    if (!req.user) throw new ApiError(401, "Unauthorized — please login");
-    if (!roles.includes(req.user.role)) {
-      throw new ApiError(403, "Forbidden — insufficient permissions");
+    try {
+      if (!req.user) throw new ApiError(401, "Unauthorized — please login");
+      if (!roles.includes(req.user.role)) {
+        throw new ApiError(403, "Forbidden — insufficient permissions");
+      }
+      next();
+    } catch (err) {
+      next(err);
     }
-    next();
   };
 };
 

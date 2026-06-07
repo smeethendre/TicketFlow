@@ -59,6 +59,7 @@ input {
 .section-shell,
 .detail-hero,
 .auth-shell {
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   background: var(--surface);
   border: 1px solid var(--line);
