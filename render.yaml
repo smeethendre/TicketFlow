@@ -25,8 +25,9 @@ services:
       - key: RAZORPAY_KEY_SECRET
         sync: false
       - key: REDIS_URL
-        fromDatabase:
-          name: ticketflow-redis
+        fromService:
+          type: keyvalue
+          name: ticketflow-kv
           property: connectionString
     buildFilter:
       ignoredPaths:
@@ -55,6 +56,10 @@ services:
         - frontend/**
         - render.yaml
 
-databases:
-  - name: ticketflow-redis
+  - type: keyvalue
+    name: ticketflow-kv
     plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
