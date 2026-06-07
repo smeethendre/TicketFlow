@@ -68,6 +68,10 @@ app.get("/", (req, res) => {
   res.send({ message: "Welcome back" });
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use(errorHandler);
 
 export { app };

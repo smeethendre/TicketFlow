@@ -1,10 +1,11 @@
-import razorpay from "../config/razorpay.js";
+import { getRazorpay } from "../config/razorpay.js";
 import crypto from "crypto";
 import { Booking } from "../model/booking.model.js";
 import { ApiError } from "../util/apiError.util.js";
 import { confirmBookingService } from "./booking.service.js";
 
 const createPaymentOrderService = async (bookingId, userId) => {
+  const razorpay = getRazorpay();
   const booking = await Booking.findById(bookingId);
   if (!booking) throw new ApiError(404, "Booking not found");
 
@@ -66,6 +67,7 @@ const verifyPaymentService = async (paymentData) => {
 };
 
 const refundPaymentService = async (bookingId, userId) => {
+  const razorpay = getRazorpay();
   const booking = await Booking.findById(bookingId);
   if (!booking) throw new ApiError(404, "Booking not found");
 

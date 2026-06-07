@@ -1,0 +1,62 @@
+services:
+  - type: web
+    name: ticketflow-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_CONNECTION
+        sync: false
+      - key: ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: ACCESS_TOKEN_EXP
+        value: 1d
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_EXP
+        value: 10d
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: REDIS_URL
+        fromDatabase:
+          name: ticketflow-redis
+          property: connectionString
+    buildFilter:
+      ignoredPaths:
+        - frontend/**
+
+  - type: web
+    name: ticketflow-frontend
+    runtime: node
+    plan: free
+    buildCommand: cd frontend && npm ci && npm run build
+    startCommand: cd frontend && npm run start -- -p $PORT
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_TICKETFLOW_API_HOST
+        fromService:
+          name: ticketflow-api
+          type: web
+          property: host
+      - key: NEXT_PUBLIC_RAZORPAY_KEY_ID
+        sync: false
+    buildFilter:
+      paths:
+        - frontend/**
+        - render.yaml
+
+databases:
+  - name: ticketflow-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []

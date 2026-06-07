@@ -4,6 +4,9 @@
   "type": "module",
   "description": "realtime end-to-end ticketing API",
   "main": "index.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon -r dotenv/config src/index.js"

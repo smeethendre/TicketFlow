@@ -13,7 +13,9 @@ import type {
 
 const API_BASE =
   process.env.NEXT_PUBLIC_TICKETFLOW_API_URL ??
-  "http://localhost:6000/ta/api/v1";
+  (process.env.NEXT_PUBLIC_TICKETFLOW_API_HOST
+    ? `https://${process.env.NEXT_PUBLIC_TICKETFLOW_API_HOST}/ta/api/v1`
+    : "http://localhost:5000/ta/api/v1");
 
 type RequestOptions = RequestInit & {
   token?: string | null;

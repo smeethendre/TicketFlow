@@ -8,6 +8,8 @@ const HOLD_TTL = 600; // 10 minutes in seconds
 
 // ── HOLD SEATS ──────────────────────────────────────
 const holdSeatsService = async (showId, seatIds, userId) => {
+  await redisClient.requireConnection();
+
   // check show exists
   const show = await Show.findById(showId);
   if (!show) throw new ApiError(404, "Show not found");
@@ -59,6 +61,8 @@ const holdSeatsService = async (showId, seatIds, userId) => {
 
 // ── RELEASE HOLD ─────────────────────────────────────
 const releaseHoldService = async (showId, seatIds, userId) => {
+  await redisClient.requireConnection();
+
   for (const seatId of seatIds) {
     const holdKey = `seat_hold:${seatId}`;
     const heldBy = await redisClient.get(holdKey);
@@ -78,6 +82,8 @@ const releaseHoldService = async (showId, seatIds, userId) => {
 
 // ── CREATE BOOKING ───────────────────────────────────
 const createBookingService = async (showId, seatIds, userId) => {
+  await redisClient.requireConnection();
+
   const show = await Show.findById(showId);
   if (!show) throw new ApiError(404, "Show not found");
 
@@ -108,6 +114,8 @@ const createBookingService = async (showId, seatIds, userId) => {
 
 // ── CONFIRM BOOKING AFTER PAYMENT ────────────────────
 const confirmBookingService = async (bookingId, paymentId, razorpayOrderId) => {
+  await redisClient.requireConnection();
+
   const booking = await Booking.findById(bookingId);
   if (!booking) throw new ApiError(404, "Booking not found");
 
