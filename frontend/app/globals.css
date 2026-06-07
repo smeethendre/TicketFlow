@@ -1,0 +1,548 @@
+:root {
+  --bg: #f6ead8;
+  --bg-alt: #fff6ea;
+  --surface: rgba(255, 248, 240, 0.84);
+  --surface-strong: #fff3e5;
+  --ink: #1d1d1b;
+  --muted: #5c5149;
+  --line: rgba(29, 29, 27, 0.12);
+  --brand: #ef5a29;
+  --brand-deep: #8a2610;
+  --accent: #0f6c78;
+  --shadow: 0 24px 60px rgba(90, 46, 13, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(239, 90, 41, 0.18), transparent 28%),
+    radial-gradient(circle at 90% 10%, rgba(15, 108, 120, 0.14), transparent 24%),
+    linear-gradient(180deg, #f8efdf 0%, #f4e5d0 55%, #f2dcc3 100%);
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.shell-header,
+.hero-panel,
+.section-shell,
+.detail-hero,
+.auth-shell {
+  backdrop-filter: blur(18px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.shell-header {
+  width: min(1180px, 100%);
+  margin: 0 auto 22px;
+  padding: 16px 20px;
+  border-radius: 24px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-lockup strong {
+  display: block;
+  font-size: 1.1rem;
+}
+
+.brand-lockup small {
+  display: block;
+  color: var(--muted);
+}
+
+.brand-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+  color: white;
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+  letter-spacing: 0.08em;
+  font-size: 1.4rem;
+}
+
+.top-nav,
+.account-strip,
+.hero-actions,
+.movie-meta-row,
+.card-actions,
+.detail-meta,
+.legend-row,
+.history-pills,
+.auth-points,
+.mode-switch,
+.city-tags {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.top-nav {
+  justify-content: center;
+}
+
+.nav-link,
+.ghost-button,
+.primary-button,
+.show-chip,
+.seat-button,
+.mode-switch button {
+  transition: 180ms ease;
+}
+
+.nav-link,
+.ghost-button,
+.primary-button.small,
+.ghost-button.small {
+  padding: 10px 14px;
+  border-radius: 999px;
+}
+
+.nav-link {
+  color: var(--muted);
+}
+
+.nav-link.active,
+.nav-link:hover {
+  background: rgba(239, 90, 41, 0.08);
+  color: var(--ink);
+}
+
+.user-chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(15, 108, 120, 0.1);
+}
+
+.user-chip small {
+  display: block;
+  color: var(--muted);
+}
+
+.primary-button,
+.ghost-button,
+.show-chip,
+.seat-button,
+.mode-switch button {
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, var(--brand), #ff8a2f);
+  color: white;
+  border-radius: 999px;
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+}
+
+.ghost-button,
+.mode-switch button {
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--ink);
+}
+
+.ghost-button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-panel,
+.detail-hero {
+  border-radius: 34px;
+  padding: 38px;
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr;
+  gap: 28px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-panel::after,
+.detail-hero::after {
+  content: "";
+  position: absolute;
+  right: -90px;
+  bottom: -120px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 90, 41, 0.26), transparent 70%);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.02;
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+h1 {
+  font-size: clamp(3rem, 8vw, 5.8rem);
+}
+
+h2 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
+h3 {
+  font-size: 1.7rem;
+}
+
+.hero-text,
+.section-heading p,
+.movie-card-body p,
+.summary-card p,
+.auth-panel p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.hero-stat-grid,
+.process-grid,
+.movie-grid,
+.show-groups,
+.booking-history {
+  display: grid;
+  gap: 18px;
+}
+
+.hero-stat-grid {
+  grid-template-columns: 1fr;
+}
+
+.hero-stat-grid article,
+.show-group-card,
+.history-card,
+.summary-card,
+.signal-panel,
+.theatre-list article {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 18px;
+}
+
+.hero-stat-grid span,
+.signal-panel strong {
+  display: block;
+  font-size: 2rem;
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+}
+
+.section-shell {
+  border-radius: 30px;
+  padding: 28px;
+}
+
+.section-heading {
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+.movie-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.movie-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 28px;
+  background: rgba(255, 253, 250, 0.74);
+  border: 1px solid var(--line);
+}
+
+.movie-poster {
+  min-height: 230px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+}
+
+.movie-poster strong {
+  font-size: 2rem;
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+}
+
+.movie-card-body {
+  padding: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.movie-meta-row,
+.cast-cloud,
+.selected-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cast-cloud span,
+.city-tags span,
+.selected-tags span,
+.history-pills span {
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(29, 29, 27, 0.05);
+  font-size: 0.92rem;
+}
+
+.split-band,
+.booking-layout,
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+}
+
+.theatre-list {
+  display: grid;
+  gap: 12px;
+}
+
+.process-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.detail-page {
+  padding-top: 6px;
+}
+
+.signal-panel {
+  align-self: start;
+}
+
+.show-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.show-chip {
+  display: grid;
+  gap: 4px;
+  min-width: 140px;
+  border-radius: 20px;
+  background: rgba(239, 90, 41, 0.08);
+  padding: 14px;
+}
+
+.show-chip:hover {
+  transform: translateY(-2px);
+  background: rgba(239, 90, 41, 0.14);
+}
+
+.seat-zone,
+.booking-sidebar,
+.auth-panel {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--line);
+  padding: 20px;
+}
+
+.screen-arc {
+  margin: 0 auto 24px;
+  width: min(520px, 100%);
+  text-align: center;
+  padding: 16px;
+  border-radius: 999px 999px 24px 24px;
+  background: linear-gradient(180deg, rgba(15, 108, 120, 0.26), rgba(15, 108, 120, 0.05));
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 10px;
+}
+
+.seat-button {
+  min-height: 54px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.seat-button.available:hover,
+.seat-button.selected {
+  background: linear-gradient(135deg, var(--brand), #ff8a2f);
+  color: white;
+}
+
+.seat-button.booked {
+  background: rgba(29, 29, 27, 0.12);
+  color: rgba(29, 29, 27, 0.45);
+  cursor: not-allowed;
+}
+
+.legend-box {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.legend-box.available {
+  background: white;
+}
+
+.legend-box.selected {
+  background: var(--brand);
+}
+
+.legend-box.booked {
+  background: rgba(29, 29, 27, 0.18);
+}
+
+.auth-page {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.auth-shell {
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.auth-panel {
+  min-height: 480px;
+}
+
+.auth-panel.form {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.mode-switch {
+  margin-bottom: 8px;
+}
+
+.mode-switch button.active {
+  background: var(--ink);
+  color: white;
+}
+
+.auth-panel label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.auth-panel input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.form-status,
+.status-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid var(--line);
+}
+
+.status-card.error {
+  background: rgba(138, 38, 16, 0.08);
+  border-color: rgba(138, 38, 16, 0.2);
+}
+
+@media (max-width: 920px) {
+  .shell-header,
+  .hero-panel,
+  .detail-hero,
+  .split-band,
+  .booking-layout,
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .shell-header {
+    padding: 18px;
+  }
+
+  .top-nav {
+    justify-content: flex-start;
+  }
+
+  .app-shell {
+    padding: 14px;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 14vw, 4.4rem);
+  }
+}
